@@ -98,11 +98,17 @@ export function paginate<T>(rows: T[], page = 1, pageSize = PAGE_SIZE) {
   }
 }
 
+/**
+ * Filter and sort, without paginating. The export uses this so a file holds
+ * every matching row, not just the page on screen.
+ */
+export function selectPayments(filters: PaymentFilters): Payment[] {
+  return sortPayments(filterPayments(filters), filters.sort, filters.direction)
+}
+
 /** Filter, sort, and paginate in one call. Use this rather than composing by hand. */
 export function queryPayments(filters: PaymentFilters) {
-  const filtered = filterPayments(filters)
-  const sorted = sortPayments(filtered, filters.sort, filters.direction)
-  return paginate(sorted, filters.page, filters.pageSize)
+  return paginate(selectPayments(filters), filters.page, filters.pageSize)
 }
 
 export function paymentById(id: string) {
